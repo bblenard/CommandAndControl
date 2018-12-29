@@ -11,3 +11,9 @@ DockerStuff. After that is done you can start the client and server via
 binary so after bringing up the environment with `docker-compose up` you
 can use the cli by using `docker run -it $SERVER_CONTAINER bash` to
 execute `/app/cli`
+
+## TODO
+
+- [] TLS
+- [] Rewrite client in a language that doesn't compile so much info into binaries
+- [] Add support for different types of task dispatching (not RESTful)
