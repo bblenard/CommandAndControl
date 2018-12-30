@@ -27,6 +27,7 @@ EXPOSE 8888/tcp
 RUN    set -x \
     && apk update \
     && apk upgrade \
+    && apk add vim \
     && rm -f /var/cache/apk/*
 
 WORKDIR /app
