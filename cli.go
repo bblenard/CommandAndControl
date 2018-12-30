@@ -123,6 +123,10 @@ func ManageClients(c *ishell.Context) {
 	for _, v := range clientList {
 		clients = append(clients, v.ID)
 	}
+	if len(clients) == 0 {
+		c.Println("No Clients are registered to server.")
+		return
+	}
 	choice := c.MultiChoice(clients, "Clients: ")
 	enterManagementFor(c, clientList[choice])
 }
