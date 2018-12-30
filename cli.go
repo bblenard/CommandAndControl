@@ -14,17 +14,10 @@ import (
 	ishell "gopkg.in/abiosoft/ishell.v2"
 
 	"github.com/bblenard/C2/endpoints"
-	"github.com/bblenard/C2/storage"
 	"github.com/bblenard/C2/types"
 )
 
 var ServerAddr string
-
-func promptUUID(c *ishell.Context) (uuid.UUID, error) {
-	c.Print("Target ID: ")
-	uuidString := c.ReadLine()
-	return uuid.Parse(uuidString)
-}
 
 func ExistingFileSource(c *ishell.Context) ([]byte, error) {
 	c.Print("Source File Path: ")
@@ -205,84 +198,6 @@ func createTaskForClient(c *ishell.Context, client types.Client) {
 	if err := PushTaskToServer(*task, ServerAddr+endpoints.SAVETASK); err != nil {
 		c.Printf("failed to push task to server: %s", err)
 	}
-}
-
-func NewClient(c *ishell.Context) {
-	newClientResp, err := http.Get(ServerAddr + endpoints.SAVECLIENT)
-	if err != nil {
-		c.Println(err)
-		return
-	}
-
-	jd := json.NewDecoder(newClientResp.Body)
-	var newClient types.Client
-	err = jd.Decode(&newClient.ID)
-	if err != nil {
-		c.Println(err.Error())
-		return
-	}
-	c.Printf("New Client ID: %s\n", newClient.ID)
-}
-
-func RetrieveTask(c *ishell.Context) {
-	c.Print("Retrieve tasks for uuid: ")
-	id, err := promptUUID(c)
-	if err != nil {
-		c.Println(err.Error())
-		return
-	}
-	headers := http.Header{}
-	headers.Add("CID", id.String())
-	resp, err := getDataFromServer(ServerAddr+endpoints.GETPENDINGTASKSBYCLIENT, headers)
-	if err != nil {
-		c.Println(err.Error())
-		return
-	}
-
-	jd := json.NewDecoder(resp.Body)
-	task := new([]types.Task)
-	err = jd.Decode(task)
-	if err != nil {
-		c.Println(err.Error())
-		c.Println(resp.Body)
-		return
-	}
-	c.Println(*task)
-}
-
-func Export(c *ishell.Context) {
-	resp, err := getDataFromServer(ServerAddr+endpoints.EXPORTDB, http.Header{})
-	if err != nil {
-		c.Print(err.Error())
-		return
-	}
-	dbdump := new(storage.DBDump)
-	dec := json.NewDecoder(resp.Body)
-	dec.Decode(dbdump)
-	// req, err := http.Get(ServerAddr + endpoints.EXPORTDB)
-	// if err != nil {
-	// 	c.Print(err)
-	// 	return
-	// }
-	// requestDecoder := json.NewDecoder(req.Body)
-	// err = requestDecoder.Decode(dbdump)
-	// if err != nil {
-	// 	c.Print(err)
-	// 	return
-	// }
-	c.Print("Where do you want to dump the Database? ")
-	dumpPath := c.ReadLine()
-	dbJson, err := json.Marshal(dbdump)
-	if err != nil {
-		c.Print(err)
-		return
-	}
-	err = ioutil.WriteFile(dumpPath, dbJson, 0644)
-	if err != nil {
-		c.Print(err)
-		return
-	}
-	return
 }
 
 func PushTaskToServer(task types.Task, addr string) error {
