@@ -189,6 +189,10 @@ func reviewTasksResultsForClient(c *ishell.Context, client types.Client) {
 	responseDecoder := json.NewDecoder(resp.Body)
 	reports := new([]types.TaskReport)
 	responseDecoder.Decode(reports)
+	if len(*reports) == 0 {
+		c.Println("Client has no completed tasks")
+		return
+	}
 	reportSummaries := make([]string, len(*reports))
 	for i, v := range *reports {
 		reportSummaries[i] = fmt.Sprintf("ID: %s\n\tTitle: %s", v.ID, v.Title)
