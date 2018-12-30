@@ -229,12 +229,12 @@ func createTaskForClient(c *ishell.Context, client types.Client) {
 	c.Print("Title for task: ")
 	title := c.ReadLine()
 	task.Title = title
-	if err := PushTaskToServer(*task); err != nil {
+	if err := pushTaskToServer(*task); err != nil {
 		c.Printf("failed to push task to server: %s", err)
 	}
 }
 
-func PushTaskToServer(task types.Task) error {
+func pushTaskToServer(task types.Task) error {
 	resp, err := postDataToServer(ServerAddr+endpoints.SAVETASK, nil, task)
 	if err != nil {
 		return err
