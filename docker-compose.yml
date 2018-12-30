@@ -1,0 +1,17 @@
+---
+version: '3'
+
+services: 
+  server:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: ./DockerStuff/server/Dockerfile
+  client:
+    build:
+      context: .
+      dockerfile: ./DockerStuff/client/Dockerfile
+    restart: always
+    environment:
+      - SERVER_ADDR=http://server:8888
+...
