@@ -195,17 +195,18 @@ func createTaskForClient(c *ishell.Context, client types.Client) {
 	c.Print("Title for task: ")
 	title := c.ReadLine()
 	task.Title = title
-	if err := PushTaskToServer(*task, ServerAddr+endpoints.SAVETASK); err != nil {
+	if err := PushTaskToServer(*task); err != nil {
 		c.Printf("failed to push task to server: %s", err)
 	}
 }
 
-func PushTaskToServer(task types.Task, addr string) error {
-	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(task)
-	_, err := http.Post(addr, "application/json", b)
+func PushTaskToServer(task types.Task) error {
+	resp, err := postDataToServer(ServerAddr+endpoints.SAVETASK, nil, task)
 	if err != nil {
 		return err
+	}
+	if resp.StatusCode != 200 {
+		return fmt.Errorf(resp.Status)
 	}
 	return nil
 }
