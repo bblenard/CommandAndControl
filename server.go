@@ -32,6 +32,22 @@ func saveTasks(w http.ResponseWriter, req *http.Request) {
 	responseEncoder.Encode("")
 }
 
+func deleteTask(w http.ResponseWriter, req *http.Request) {
+	logging.Journal.Logf(logging.HTTP, "Endpoint: %s\n", req.URL)
+	responseEncoder := json.NewEncoder(w)
+	taskID := req.Header.Get("TID")
+	if taskID == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		responseEncoder.Encode("missing task id to delete")
+	}
+	err := storage.DB.DeleteTasks(taskID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		responseEncoder.Encode(err)
+	}
+	responseEncoder.Encode("task removed")
+}
+
 func saveTaskResults(w http.ResponseWriter, req *http.Request) {
 	logging.Journal.Logf(logging.HTTP, "Endpoint: %s\n", req.URL)
 	responseEncoder := json.NewEncoder(w)
@@ -172,6 +188,7 @@ func ServerMode() error {
 	http.HandleFunc(endpoints.GETCLIENTBYID, getClientByID) // Internal
 	http.HandleFunc(endpoints.GETPENDINGTASKSBYCLIENT, getPendingTasksByClient)
 	http.HandleFunc(endpoints.GETCOMPLETEDTASKSBYCLIENT, getCompletedTasksByClient) // Internal
+	http.HandleFunc(endpoints.DELETETASK, deleteTask)                               // Internal
 	return http.ListenAndServe("0.0.0.0:8888", nil)
 }
 

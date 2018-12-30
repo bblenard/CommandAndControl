@@ -21,6 +21,7 @@ const (
 	FROM task_results r
 	LEFT JOIN tasks t ON t.ID=r.ID AND t.Target=r.Target
 	WHERE t.ID IS NOT NULL OR r.ID IS NOT NULL) WHERE Target=?`
+	DELETE_TASK_QUERY = "DELETE FROM tasks WHERE ID=?"
 )
 
 type MySQLDB struct {
@@ -177,4 +178,24 @@ func (m *MySQLDB) GetCompletedTasksByClient(id string) ([]types.TaskReport, erro
 		*reports = append(*reports, t)
 	}
 	return *reports, nil
+}
+
+func (m *MySQLDB) DeleteTasks(taskIDs ...string) error {
+	stmt, err := m.db.Prepare(DELETE_TASK_QUERY)
+	if err != nil {
+		return fmt.Errorf("failed to prepare DELETE_TASK_QUERY statement: %s", err)
+	}
+	var numberOfDeleteRows int64
+	for _, id := range taskIDs {
+		deleteResult, err := stmt.Exec(id)
+		num, err := deleteResult.RowsAffected()
+		if err != nil {
+			return err
+		}
+		numberOfDeleteRows = numberOfDeleteRows + num
+	}
+	if numberOfDeleteRows != int64(len(taskIDs)) {
+		return fmt.Errorf("failed to delete all tasks specified in request")
+	}
+	return nil
 }

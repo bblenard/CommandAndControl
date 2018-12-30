@@ -137,6 +137,7 @@ func enterManagementFor(c *ishell.Context, client types.Client) {
 		choice := c.MultiChoice([]string{
 			"Review Task Results",
 			"Create New Task",
+			"Delete Pending Task",
 			"Back",
 		}, "Management Options: ")
 		switch choice {
@@ -145,10 +146,35 @@ func enterManagementFor(c *ishell.Context, client types.Client) {
 		case 1:
 			createTaskForClient(c, client)
 		case 2:
+			deletePendingTaskForClient(c, client)
+		case 3:
 			return
 		}
 		c.ReadLine()
 	}
+}
+
+func deletePendingTaskForClient(c *ishell.Context, client types.Client) {
+	headers := http.Header{}
+	headers.Add("CID", client.ID)
+	resp, err := getDataFromServer(ServerAddr+endpoints.GETPENDINGTASKSBYCLIENT, headers)
+	if err != nil {
+		c.Println(err)
+		return
+	}
+	responseDecoder := json.NewDecoder(resp.Body)
+	pendingTasks := new([]types.Task)
+	responseDecoder.Decode(pendingTasks)
+	if len(*pendingTasks) == 0 {
+		c.Println("Client has no pending tasks, exiting")
+		return
+	}
+	pendingTasksMenuOptions := make([]string, len(*pendingTasks))
+	for i, v := range *pendingTasks {
+		pendingTasksMenuOptions[i] = fmt.Sprintf("ID: %s\n\tTitle: %s", v.ID, v.Title)
+	}
+	choice := c.MultiChoice(pendingTasksMenuOptions, "Select Pending task to delete: ")
+	deleteTaskFromServer((*pendingTasks)[choice])
 }
 
 func reviewTasksResultsForClient(c *ishell.Context, client types.Client) {
@@ -211,6 +237,22 @@ func PushTaskToServer(task types.Task) error {
 	}
 	if resp.StatusCode != 200 {
 		return fmt.Errorf(resp.Status)
+	}
+	return nil
+}
+
+func deleteTaskFromServer(task types.Task) error {
+	headers := http.Header{}
+	headers.Add("TID", task.ID)
+	resp, err := postDataToServer(ServerAddr+endpoints.DELETETASK, headers, nil)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		responseDecoder := json.NewDecoder(resp.Body)
+		var errorStr string
+		responseDecoder.Decode(&errorStr)
+		return fmt.Errorf("failed to delete task from server: %s", errorStr)
 	}
 	return nil
 }

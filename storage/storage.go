@@ -18,6 +18,7 @@ type Storage interface {
 	String() string
 	Init() error
 	SaveTasks(...types.Task) error
+	DeleteTasks(...string) error
 	SaveTaskResults(...types.Result) error
 	SaveClients(...types.Client) error
 	GetClients() ([]types.Client, error)

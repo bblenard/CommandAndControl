@@ -6,6 +6,7 @@ const (
 	GETCOMPLETEDTASKSBYCLIENT string = "/Get/Tasks/Completed/By/Client" // Internal
 	GETPENDINGTASKSBYCLIENT   string = "/Get/Tasks/Pending/By/Client"
 	SAVETASK                  string = "/Save/Tasks"                 // Internal
+	DELETETASK                string = "/Delete/Tasks"               // Internal
 	GETCLIENTS                string = "/Get/Clients"                // Internal
 	GETCLIENTBYID             string = "/Get/Client/By/ID"           // Internal
 	GETTASKBYID               string = "/Get/Task/By/ID"             // Internal
