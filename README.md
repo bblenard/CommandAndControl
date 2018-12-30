@@ -14,6 +14,6 @@ execute `/app/cli`
 
 ## TODO
 
-- [] TLS
-- [] Rewrite client in a language that doesn't compile so much info into binaries
-- [] Add support for different types of task dispatching (not RESTful)
+- [ ] TLS
+- [ ] Rewrite client in a language that doesn't compile so much info into binaries
+- [ ] Add support for different types of task dispatching (not RESTful)
