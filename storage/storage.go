@@ -3,7 +3,7 @@ package storage
 import (
 	"fmt"
 
-	"github.com/bblenard/C2/types"
+	"github.com/bblenard/CommandAndControl/types"
 )
 
 type Type int

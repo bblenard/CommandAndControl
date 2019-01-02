@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/bblenard/C2/types"
+	"github.com/bblenard/CommandAndControl/types"
 	_ "github.com/mattn/go-sqlite3"
 )
 

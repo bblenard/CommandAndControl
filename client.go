@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/bblenard/C2/endpoints"
-	"github.com/bblenard/C2/types"
+	"github.com/bblenard/CommandAndControl/endpoints"
+	"github.com/bblenard/CommandAndControl/types"
 	"github.com/google/uuid"
 )
 

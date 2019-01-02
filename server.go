@@ -7,10 +7,10 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/bblenard/C2/endpoints"
-	"github.com/bblenard/C2/logging"
-	"github.com/bblenard/C2/storage"
-	"github.com/bblenard/C2/types"
+	"github.com/bblenard/CommandAndControl/endpoints"
+	"github.com/bblenard/CommandAndControl/logging"
+	"github.com/bblenard/CommandAndControl/storage"
+	"github.com/bblenard/CommandAndControl/types"
 )
 
 func saveTasks(w http.ResponseWriter, req *http.Request) {

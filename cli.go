@@ -13,8 +13,8 @@ import (
 	"github.com/google/uuid"
 	ishell "gopkg.in/abiosoft/ishell.v2"
 
-	"github.com/bblenard/C2/endpoints"
-	"github.com/bblenard/C2/types"
+	"github.com/bblenard/CommandAndControl/endpoints"
+	"github.com/bblenard/CommandAndControl/types"
 )
 
 var ServerAddr string
