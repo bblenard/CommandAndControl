@@ -100,9 +100,6 @@ func (t *Task) Execute() (*Result, error) {
 			return nil, err
 		}
 		tr = gt.Execute()
-		if err != nil {
-			return nil, err
-		}
 	case "Put":
 		pt := new(PutDetails)
 		err := json.Unmarshal(t.Details, pt)
@@ -110,16 +107,13 @@ func (t *Task) Execute() (*Result, error) {
 			return nil, err
 		}
 		tr = pt.Execute()
-		if err != nil {
-			return nil, err
-		}
 	case "Execute":
 		et := new(ExecuteDetails)
 		err := json.Unmarshal(t.Details, et)
 		if err != nil {
 			return nil, err
 		}
-		tr, err = et.Execute()
+		tr = et.Execute()
 		if err != nil {
 			return nil, err
 		}

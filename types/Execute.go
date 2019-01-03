@@ -56,12 +56,12 @@ func (e ExecuteDetails) createTempFile() (ExecuteTaskFile, error) {
 	return etf, nil
 }
 
-func (e ExecuteDetails) Execute() (*Result, error) {
+func (e ExecuteDetails) Execute() *Result {
 	result := new(Result)
 	etf, err := e.createTempFile()
 	if err != nil {
 		result.Result = base64.StdEncoding.EncodeToString([]byte(err.Error()))
-		return result, err
+		return result
 	}
 	defer CleanUpFile(etf)
 
@@ -69,11 +69,11 @@ func (e ExecuteDetails) Execute() (*Result, error) {
 	cmdBytes, err := cmd.CombinedOutput()
 	if err != nil {
 		result.Result = base64.StdEncoding.EncodeToString([]byte("cmd CombinedOutput: " + err.Error()))
-		return result, err
+		return result
 	}
 
 	result.Result = base64.StdEncoding.EncodeToString(cmdBytes)
-	return result, nil
+	return result
 }
 
 func (et *ExecuteDetails) String() string {

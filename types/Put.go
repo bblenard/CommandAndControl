@@ -18,19 +18,20 @@ func (p PutDetails) Execute() *Result {
 	fileHandle, err := os.Create(p.Path)
 	defer fileHandle.Close()
 	if err != nil {
-		result.Result = err.Error()
+		result.Result = base64.StdEncoding.EncodeToString([]byte(err.Error()))
 	}
 
 	fileData, err := base64.StdEncoding.DecodeString(p.Content)
 	if err != nil {
-		result.Result = err.Error()
+		result.Result = base64.StdEncoding.EncodeToString([]byte(err.Error()))
 	}
 
 	bytesWritten, err := fileHandle.Write(fileData)
 	if err != nil {
-		result.Result = fmt.Sprintf("Partial file write (%d bytes): %s", bytesWritten, err.Error())
+		resultString := fmt.Sprintf("Partial file write (%d bytes): %s", bytesWritten, err.Error())
+		result.Result = base64.StdEncoding.EncodeToString([]byte(resultString))
 	}
-	result.Result = "Wrote file without error"
+	result.Result = base64.StdEncoding.EncodeToString([]byte("Wrote file without error"))
 	return result
 }
 
