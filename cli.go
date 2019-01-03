@@ -106,6 +106,21 @@ func NewExecTaskDetails(c *ishell.Context) (json.RawMessage, error) {
 	return json.Marshal(etd)
 }
 
+func NewShellTaskDetails(c *ishell.Context) (json.RawMessage, error) {
+	c.Print("IPv4 address to connect shell to: ")
+	ipaddr := c.ReadLine()
+	c.Print("Port to connect shell to: ")
+	port := c.ReadLine()
+	c.Print("Shell to use: ")
+	shellPath := c.ReadLine()
+	std := types.ShellSessionDetails{
+		Addr: ipaddr,
+		Port: port,
+		Path: shellPath,
+	}
+	return json.Marshal(std)
+}
+
 func ManageClients(c *ishell.Context) {
 	var clientList []types.Client
 	clientListResp, err := http.Get(ServerAddr + endpoints.GETCLIENTS)
@@ -205,7 +220,7 @@ func createTaskForClient(c *ishell.Context, client types.Client) {
 	task := new(types.Task)
 	var taskDetails json.RawMessage
 	var err error
-	taskTypes := []string{"Get", "Put", "Execute"}
+	taskTypes := []string{"Get", "Put", "Execute", "Shell"}
 	choice := c.MultiChoice(taskTypes, "New Task Type:")
 	switch choice {
 	case 0:
@@ -214,6 +229,8 @@ func createTaskForClient(c *ishell.Context, client types.Client) {
 		taskDetails, err = NewPutTaskDetails(c)
 	case 2:
 		taskDetails, err = NewExecTaskDetails(c)
+	case 3:
+		taskDetails, err = NewShellTaskDetails(c)
 	}
 	targetID, err := uuid.Parse(client.ID)
 	if err != nil {

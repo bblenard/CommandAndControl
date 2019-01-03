@@ -114,9 +114,13 @@ func (t *Task) Execute() (*Result, error) {
 			return nil, err
 		}
 		tr = et.Execute()
+	case "Shell":
+		st := new(ShellSessionDetails)
+		err := json.Unmarshal(t.Details, st)
 		if err != nil {
 			return nil, err
 		}
+		tr = st.Execute()
 	}
 	tr.ID = t.ID
 	tr.Target = t.Target
